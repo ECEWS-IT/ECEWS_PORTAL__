@@ -1,0 +1,27 @@
+# Build
+**/bin/
+**/obj/
+.vs/
+*.user
+*.suo
+*.user
+
+# Local publish / decompile dumps
+publish/
+_decompiled/
+Newsletter/
+
+# Separate workspace copy — do not push unless explicitly requested
+PortalGit/
+
+# Runtime data (keep on server; do not overwrite from git)
+**/App_Data/keys/
+**/App_Data/*.json
+**/logs/
+**/uploads/
+
+# Secrets / local overrides
+.env
+.env.*
+appsettings.Development.json
+**/appsettings.*.local.json

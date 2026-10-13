@@ -1,0 +1,38 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+    Layout = "_PortalLayout";
+}
+
+<div class="portal portal-pro" style="padding: 3rem 1.5rem; max-width: 720px; margin: 0 auto;">
+    <h1 style="font-size: 1.75rem; margin-bottom: 0.5rem;">Something went wrong</h1>
+    <p style="opacity: 0.8; margin-bottom: 1.25rem;">An error occurred while processing your request.</p>
+
+    @if (Model.ShowRequestId)
+    {
+        <p><strong>Request ID:</strong> <code>@Model.RequestId</code></p>
+    }
+
+    @if (Model.ShowDetails && !string.IsNullOrWhiteSpace(Model.Message))
+    {
+        <div style="margin-top: 1.5rem; padding: 1rem 1.25rem; border: 1px solid #c45c4a; border-radius: 8px; background: #fff5f3;">
+            <p style="font-weight: 600; margin: 0 0 0.5rem;">@Model.Message</p>
+            @if (!string.IsNullOrWhiteSpace(Model.Detail))
+            {
+                <pre style="white-space: pre-wrap; word-break: break-word; font-size: 0.85rem; margin: 0;">@Model.Detail</pre>
+            }
+        </div>
+        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.75;">
+            Turn off <code>Portal:ShowDetailedErrors</code> in appsettings after fixing.
+        </p>
+    }
+    else
+    {
+        <p style="margin-top: 1rem; font-size: 0.95rem;">
+            Check <code>logs\exceptions.log</code> on the server, or set
+            <code>"Portal": {{ "ShowDetailedErrors": true }}</code> in appsettings.json and recycle the app pool.
+        </p>
+    }
+
+    <p style="margin-top: 2rem;"><a href="/">← Back to portal</a></p>
+</div>

@@ -1,0 +1,71 @@
+@model NotificationsPageModel
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Notifications";
+}
+
+<div class="portal portal-pro admin-page pp-page" id="portal">
+    <header class="pro-header">
+        <div class="pro-header-left">
+            <a href="/" class="logo-block" aria-label="ECEWS Portal home">
+                <img src="~/images/ecews-logo-transparent.png" asp-append-version="true" alt="ECEWS" class="logo-img" width="200" height="44" />
+            </a>
+        </div>
+        <div class="pro-header-center">
+            <h1 class="admin-header-title">Notifications</h1>
+        </div>
+        <div class="pro-header-right">
+            <button class="pro-icon-btn" id="themeBtn" aria-label="Toggle light/dark theme" title="Theme">
+                <i class="ti ti-moon" id="themeIc"></i>
+            </button>
+            <a href="/" class="admin-back-btn"><i class="ti ti-home"></i> Portal</a>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <div>
+                <div class="admin-crumb">Portal / Updates</div>
+                <h2 class="admin-page-title">Notifications</h2>
+            </div>
+            <span class="admin-chip">
+                @(Model.UnreadCount > 0 ? $"{Model.UnreadCount} were unread" : "All caught up")
+            </span>
+        </div>
+
+        <div class="admin-table-shell nt-list">
+            @if (Model.Items.Count == 0)
+            {
+                <div class="admin-empty">
+                    <i class="ti ti-bell-off"></i>
+                    <p>No notifications yet.</p>
+                </div>
+            }
+            else
+            {
+                @foreach (var n in Model.Items)
+                {
+                    var isExternal = !string.IsNullOrWhiteSpace(n.Url) && n.Url.StartsWith("http", StringComparison.OrdinalIgnoreCase);
+                    <article class="nt-item">
+                        <div class="nt-icon"><i class="ti @(string.IsNullOrWhiteSpace(n.IconClass) ? "ti-bell" : n.IconClass)"></i></div>
+                        <div class="nt-body">
+                            <h3>@n.Title</h3>
+                            <p>@n.Body</p>
+                            <div class="nt-meta">
+                                <span>@n.Source</span>
+                                <span>·</span>
+                                <time datetime="@n.CreatedAt.ToString("o")">@n.CreatedAt.LocalDateTime.ToString("d MMM yyyy · HH:mm")</time>
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(n.Url))
+                            {
+                                <a class="nt-link" href="@n.Url" target="@(isExternal ? "_blank" : null)" rel="@(isExternal ? "noopener noreferrer" : null)">
+                                    Open <i class="ti ti-arrow-right"></i>
+                                </a>
+                            }
+                        </div>
+                    </article>
+                }
+            }
+        </div>
+    </main>
+</div>

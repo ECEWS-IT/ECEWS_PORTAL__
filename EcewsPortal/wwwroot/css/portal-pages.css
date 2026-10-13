@@ -1,0 +1,388 @@
+/* Profile / Notifications / Weather pages */
+
+.pp-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.pp-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 750;
+  color: #fff;
+  background: var(--brand, #10684a);
+  flex-shrink: 0;
+}
+
+.pp-email {
+  margin: 4px 0 0;
+  color: var(--ink-muted);
+  font-size: 14px;
+}
+
+.pp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.pp-card {
+  padding: 18px 20px;
+}
+
+.pp-card h3 {
+  margin: 0 0 14px;
+  font-size: 14px;
+  font-weight: 750;
+  color: var(--ink);
+}
+
+.pp-dl {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+}
+
+.pp-dl div {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 10px;
+}
+
+.pp-dl dt {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ink-muted);
+}
+
+.pp-dl dd {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  word-break: break-word;
+}
+
+.pp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.nt-list {
+  padding: 8px;
+}
+
+.nt-item {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 12px;
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.nt-item:last-child {
+  border-bottom: none;
+}
+
+.nt-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: 18px;
+}
+
+.nt-body h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 720;
+  color: var(--ink);
+}
+
+.nt-body p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.nt-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.nt-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--brand);
+  text-decoration: none;
+}
+
+.nt-link:hover {
+  text-decoration: underline;
+}
+
+.wx-page-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.wx-state-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--ink-muted);
+}
+
+.wx-state-select {
+  min-width: 200px;
+  max-width: 280px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+}
+
+.wx-state-select-sm {
+  min-width: 0;
+  flex: 1;
+  max-width: none;
+  padding: 6px 8px;
+  font-size: 12px;
+}
+
+.wx-place-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px 10px;
+}
+
+.wx-loc-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.wx-loc-btn:hover {
+  background: var(--brand-soft);
+  border-color: var(--brand-muted);
+}
+
+@media (max-width: 640px) {
+  .wx-page-tools {
+    width: 100%;
+  }
+
+  .wx-state-label,
+  .wx-state-select {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.wx-page-icon {
+  font-size: 56px;
+  line-height: 1;
+}
+
+.wx-page-temp {
+  font-size: 40px;
+  font-weight: 780;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.wx-page-loc {
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--ink);
+  margin-top: 2px;
+}
+
+.wx-page-desc {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-top: 4px;
+}
+
+.wx-page-note {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+.wx-page-days {
+  padding: 16px;
+}
+
+.wx-page-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.wx-page-day {
+  text-align: center;
+  padding: 14px 8px;
+  border-radius: 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+
+.wx-page-day-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-muted);
+}
+
+.wx-page-day-icon {
+  font-size: 24px;
+  margin: 8px 0;
+}
+
+.wx-page-day-hi {
+  font-size: 14px;
+  font-weight: 750;
+  color: var(--ink);
+}
+
+.wx-page-day-lo {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+
+@media (max-width: 900px) {
+  .pp-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wx-page-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .pp-dl div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .wx-page-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .wx-page-now {
+    grid-template-columns: 1fr;
+    text-align: center;
+    justify-items: center;
+  }
+}
+
+.wx-page-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.wx-state-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--ink-muted);
+}
+
+.wx-state-select {
+  min-width: 200px;
+  max-width: 280px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+}
+
+.wx-state-select-sm {
+  min-width: 0;
+  flex: 1;
+  max-width: none;
+  padding: 6px 8px;
+  font-size: 12px;
+}
+
+.wx-place-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px 10px;
+}
+
+.wx-loc-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.wx-loc-btn:hover {
+  background: var(--brand-soft);
+  border-color: var(--brand-muted);
+}
+
+@media (max-width: 640px) {
+  .wx-page-tools { width: 100%; }
+  .wx-state-label,
+  .wx-state-select { width: 100%; max-width: none; }
+}

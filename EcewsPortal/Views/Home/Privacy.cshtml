@@ -1,0 +1,33 @@
+﻿@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Privacy Policy";
+}
+
+<div class="portal portal-pro admin-page pp-page" id="portal">
+    <header class="pro-header">
+        <div class="pro-header-left">
+            <a href="/" class="logo-block" aria-label="ECEWS Portal home">
+                <img src="~/images/ecews-logo-transparent.png" asp-append-version="true" alt="ECEWS" class="logo-img" width="200" height="44" />
+            </a>
+        </div>
+        <div class="pro-header-center">
+            <h1 class="admin-header-title">Privacy</h1>
+        </div>
+        <div class="pro-header-right">
+            <button class="pro-icon-btn" id="themeBtn" aria-label="Toggle light/dark theme" title="Theme">
+                <i class="ti ti-moon" id="themeIc"></i>
+            </button>
+            <a href="/" class="admin-back-btn"><i class="ti ti-home"></i> Portal</a>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="admin-crumb">Portal / Legal</div>
+        <h2 class="admin-page-title">Privacy Policy</h2>
+        <div class="admin-table-shell pp-card" style="padding:20px; margin-top:16px;">
+            <p>The ECEWS Portal is an internal staff application. It uses Microsoft Entra ID to authenticate <strong>@@ecews.org</strong> work accounts.</p>
+            <p style="margin-top:12px;">When you sign in, the portal stores your name and email to manage app access, active sessions, and optional usage analytics for administrators.</p>
+            <p style="margin-top:12px;">Questions about data handling can be directed to IT via the <a href="https://helpdesk.ecews.org" target="_blank" rel="noopener noreferrer">Help Desk</a>.</p>
+        </div>
+    </main>
+</div>

@@ -1,0 +1,58 @@
+@model EmailLoginViewModel
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Sign in";
+}
+
+<div class="portal portal-pro admin-page" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;">
+    <div class="admin-panel" style="max-width:440px;width:100%;padding:28px;">
+        <div style="text-align:center;margin-bottom:20px;">
+            <i class="ti ti-building" style="font-size:36px;color:var(--brand);"></i>
+            <h1 style="margin:10px 0 6px;font-size:22px;color:var(--ink);">Sign in to ECEWS Portal</h1>
+            <p style="margin:0;color:var(--ink-soft);font-size:13px;line-height:1.5;">
+                Staff: enter your allowlisted work email. Microsoft directory login is also available.
+            </p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="admin-alert admin-alert-err" role="alert" style="margin-bottom:14px;">
+                <i class="ti ti-alert-circle"></i>
+                <span>@Model.ErrorMessage</span>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.InfoMessage))
+        {
+            <div class="admin-alert admin-alert-ok" role="status" style="margin-bottom:14px;">
+                <i class="ti ti-circle-check"></i>
+                <span>@Model.InfoMessage</span>
+            </div>
+        }
+
+        <form asp-action="EmailSignIn" method="post" style="margin-bottom:18px;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="RedirectUri" />
+            <div class="admin-field" style="margin-bottom:12px;">
+                <label asp-for="Email">Work email</label>
+                <input asp-for="Email" type="email" autocomplete="username" placeholder="name@ecews.org" required />
+                <span asp-validation-for="Email" style="color:#b42318;font-size:12px;"></span>
+            </div>
+            <button type="submit" class="admin-primary-btn" style="width:100%;justify-content:center;">
+                <i class="ti ti-login"></i>
+                Continue with email
+            </button>
+        </form>
+
+        <div style="display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--ink-soft);font-size:12px;">
+            <span style="flex:1;height:1px;background:var(--line,#ddd);"></span>
+            <span>or</span>
+            <span style="flex:1;height:1px;background:var(--line,#ddd);"></span>
+        </div>
+
+        <a class="admin-ghost-btn" href="@Url.Action("SignIn", "Account", new { redirectUri = Model.RedirectUri })"
+           style="width:100%;justify-content:center;text-decoration:none;display:inline-flex;">
+            <i class="ti ti-brand-windows"></i>
+            Sign in with Microsoft (directory)
+        </a>
+    </div>
+</div>

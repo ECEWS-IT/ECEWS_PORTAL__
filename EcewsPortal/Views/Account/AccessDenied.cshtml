@@ -1,0 +1,29 @@
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="portal portal-pro admin-page" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;">
+    <div class="admin-panel" style="max-width:460px;width:100%;padding:28px;text-align:center;">
+        <i class="ti ti-lock" style="font-size:40px;color:var(--brand);"></i>
+        <h1 style="margin:12px 0 8px;font-size:22px;color:var(--ink);">Access denied</h1>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <p style="margin:0 0 18px;color:var(--ink-soft);font-size:14px;line-height:1.5;">
+                Your administrator role does not include this page. Contact the super administrator if you need access.
+            </p>
+            <a class="admin-primary-btn" href="/" style="text-decoration:none;">
+                <i class="ti ti-home"></i> Return to portal
+            </a>
+        }
+        else
+        {
+            <p style="margin:0 0 18px;color:var(--ink-soft);font-size:14px;line-height:1.5;">
+                Sign in with your allowlisted work email (authentication code) or Microsoft directory account.
+            </p>
+            <a class="admin-primary-btn" href="/Account/Login" style="text-decoration:none;">
+                <i class="ti ti-login"></i> Go to sign in
+            </a>
+        }
+    </div>
+</div>

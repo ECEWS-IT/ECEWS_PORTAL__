@@ -1,0 +1,440 @@
+﻿@model PortalViewModel
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Home";
+}
+
+<div class="portal portal-pro" id="portal">
+
+    <header class="pro-header">
+        <div class="pro-header-left">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle navigation">
+                <i class="ti ti-menu-2"></i>
+            </button>
+            <a href="/" class="logo-block" aria-label="ECEWS Portal home">
+                <img src="~/images/ecews-logo-transparent.png"
+                     asp-append-version="true"
+                     alt="ECEWS — Excellence Community Education Welfare Scheme"
+                     class="logo-img"
+                     width="200"
+                     height="44" />
+            </a>
+        </div>
+
+        <div class="pro-header-center">
+            <button class="pro-search srch-trigger" id="searchTrigger" aria-label="Open search (Ctrl+K)">
+                <i class="ti ti-search"></i>
+                <span>Search apps, documents, people…</span>
+            </button>
+        </div>
+
+        <div class="pro-header-right">
+            <button class="pro-icon-btn mobile-search-btn srch-trigger" id="mobileSearchBtn" aria-label="Search" title="Search">
+                <i class="ti ti-search"></i>
+            </button>
+
+            <div class="pro-status" id="systemStatus" title="Checking system status…">
+                <span class="pro-status-dot" id="systemStatusDot"></span>
+                <span class="pro-status-text" id="systemStatusText">Checking…</span>
+            </div>
+
+            <button class="pro-icon-btn" id="themeBtn" aria-label="Toggle light/dark theme" title="Theme">
+                <i class="ti ti-moon" id="themeIc"></i>
+            </button>
+
+            <button class="pro-icon-btn desktop-only-btn" id="layoutBtn" aria-label="Toggle card/compact layout" title="Layout">
+                <i class="ti ti-layout-grid" id="layoutIc"></i>
+            </button>
+
+            <div class="notif-wrap">
+                <button class="pro-icon-btn notif-btn" id="notifBtn" aria-label="Notifications" aria-expanded="false">
+                    <i class="ti ti-bell"></i>
+                    @if (Model.NotificationCount > 0)
+                    {
+                        <span class="notif-badge">@Model.NotificationCount</span>
+                    }
+                </button>
+                <div class="notif-panel" id="notifPanel" hidden>
+                    <div class="notif-panel-hdr">Notifications</div>
+                    @{
+                        var panelNotes = ViewBag.Notifications as IReadOnlyList<PortalNotification> ?? [];
+                    }
+                    @if (panelNotes.Count == 0)
+                    {
+                        <div class="notif-item">
+                            <div class="notif-dot"></div>
+                            <div>
+                                <div class="notif-txt">You're all caught up</div>
+                                <div class="notif-src">No new portal notifications</div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (var item in panelNotes.Take(5))
+                        {
+                            <a class="notif-item" href="@(string.IsNullOrWhiteSpace(item.Url) ? "/Home/Notifications" : item.Url)"
+                               style="text-decoration:none;color:inherit;display:flex;">
+                                <div class="notif-dot"></div>
+                                <div>
+                                    <div class="notif-txt">@item.Title</div>
+                                    <div class="notif-src">@item.Source</div>
+                                </div>
+                            </a>
+                        }
+                    }
+                    <a class="notif-all" href="/Home/Notifications">View all notifications</a>
+                </div>
+            </div>
+
+            <div class="pro-user-wrap">
+                <button class="pro-user" id="userMenuBtn" type="button" aria-label="Account menu" aria-expanded="false" aria-haspopup="true">
+                    <div class="pro-user-avatar" title="@Model.StaffName">
+                        <span>@Model.StaffInitials</span>
+                    </div>
+                    <div class="pro-user-info">
+                        <span class="pro-user-greeting" id="hdrGreeting">@Model.Greeting</span>
+                        <span class="pro-user-name">@Model.StaffName</span>
+                    </div>
+                    <i class="ti ti-chevron-down pro-user-chevron"></i>
+                </button>
+                <div class="pro-user-panel" id="userMenuPanel" hidden>
+                    <div class="pro-user-panel-hdr">
+                        <div class="pro-user-panel-avatar"><span>@Model.StaffInitials</span></div>
+                        <div>
+                            <div class="pro-user-panel-name">@Model.StaffName</div>
+                            <div class="pro-user-panel-role">@(string.IsNullOrEmpty(Model.StaffEmail) ? "ECEWS Staff" : Model.StaffEmail)</div>
+                        </div>
+                    </div>
+                    <a class="pro-user-item" href="/Home/Profile"><i class="ti ti-user"></i> My Profile</a>
+                    @if (Model.IsAdmin)
+                    {
+                        @if (AdminAccessService.CanAccess(User, AdminPages.Applications))
+                        {
+                            <a class="pro-user-item" href="/Admin/Settings"><i class="ti ti-settings"></i> Applications</a>
+                        }
+                        @if (AdminAccessService.CanAccess(User, AdminPages.StaffAccess))
+                        {
+                            <a class="pro-user-item" href="/Admin/Users"><i class="ti ti-user-cog"></i> Users &amp; Apps</a>
+                        }
+                        @if (AdminAccessService.CanAccess(User, AdminPages.ActiveUsers))
+                        {
+                            <a class="pro-user-item" href="/Admin/ActiveUsers"><i class="ti ti-users"></i> Active Users</a>
+                        }
+                        @if (AdminAccessService.CanAccess(User, AdminPages.Analytics))
+                        {
+                            <a class="pro-user-item" href="/Admin/Analytics"><i class="ti ti-chart-area-line"></i> Analytics</a>
+                        }
+                        @if (AdminAccessService.IsSuperAdmin(User))
+                        {
+                            <a class="pro-user-item" href="/Admin/Administrators"><i class="ti ti-crown"></i> Administrators</a>
+                        }
+                    }
+                    <a class="pro-user-item" href="https://helpdesk.ecews.org" target="_blank" rel="noopener noreferrer"><i class="ti ti-help"></i> Help & Support</a>
+                    <div class="pro-user-divider"></div>
+                    <form asp-controller="Account" asp-action="SignOutUser" method="post" class="pro-signout-form">
+                        @Html.AntiForgeryToken()
+                        <button class="pro-user-item pro-user-signout" type="submit">
+                            <i class="ti ti-logout"></i> Sign Out
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="pro-shell">
+        <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+        <aside class="pro-sidebar" id="proSidebar">
+            <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">
+                <i class="ti ti-layout-sidebar-left-collapse" id="sidebarCollapseIc"></i>
+            </button>
+
+            <nav class="pro-nav" aria-label="Main navigation">
+                @foreach (var cat in Model.Categories)
+                {
+                    <button class="pro-nav-item nav-btn @(cat.IsActive ? "active" : "")" data-filter="@cat.Id">
+                        <i class="ti @cat.IconClass"></i>
+                        <span>@cat.Label</span>
+                    </button>
+                }
+            </nav>
+
+            <div class="pro-promo reveal">
+                <div class="pro-promo-art" aria-hidden="true">
+                    <div class="pro-promo-shape"></div>
+                    <div class="pro-promo-house">🏠</div>
+                </div>
+                <p class="pro-promo-text">One Portal.<br />Endless Possibilities.</p>
+                <a href="https://helpdesk.ecews.org" class="pro-promo-btn" target="_blank" rel="noopener noreferrer">Contact HelpDesk <i class="ti ti-arrow-right"></i></a>
+            </div>
+        </aside>
+
+        <div class="pro-content">
+            <section class="pro-greeting reveal">
+                <h1 id="greeting">@Model.Greeting, @Model.StaffName.Split(' ')[0] 👋</h1>
+                <p>Welcome back to the ECEWS staff portal · <span id="todayDate">@Model.TodayDate</span></p>
+            </section>
+
+            <div class="pro-body">
+                <main class="pro-main">
+                    <div class="hero-grid reveal" id="heroGrid">
+                        <div class="hero-carousel hero-main" id="heroCarousel">
+                            @for (var hi = 0; hi < Model.HeroArticles.Count; hi++)
+                            {
+                                var hero = Model.HeroArticles[hi];
+                                <article class="hero-slide @hero.SizeClass @(hi == 0 ? "active" : "") @(string.IsNullOrWhiteSpace(hero.ImageUrl) ? "" : "has-photo")" data-index="@hi">
+                                    <div class="hero-bg">
+                                        @if (!string.IsNullOrWhiteSpace(hero.ImageUrl))
+                                        {
+                                            <img class="hero-photo"
+                                                 src="@hero.ImageUrl"
+                                                 asp-append-version="true"
+                                                 alt=""
+                                                 loading="@(hi == 0 ? "eager" : "lazy")" />
+                                        }
+                                        <div class="hero-pattern"></div>
+                                        <div class="hero-shimmer"></div>
+                                        <div class="hero-photo-shade"></div>
+                                        @if (string.IsNullOrWhiteSpace(hero.ImageUrl))
+                                        {
+                                            <span class="hero-emoji" aria-hidden="true">@hero.Emoji</span>
+                                        }
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(hero.Badge))
+                                    {
+                                        <div class="hero-badge">@hero.Badge</div>
+                                    }
+                                    <div class="hero-overlay">
+                                        <div class="hero-src">@hero.Source</div>
+                                        <div class="hero-ttl">@hero.Title</div>
+                                        @if (!string.IsNullOrWhiteSpace(hero.Url))
+                                        {
+                                            <a href="@hero.Url" class="hero-link">Read full update →</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="#" class="hero-link">Read full update →</a>
+                                        }
+                                    </div>
+                                </article>
+                            }
+                            <div class="hero-dots" id="heroDots" role="tablist" aria-label="Featured news">
+                                @for (var di = 0; di < Model.HeroArticles.Count; di++)
+                                {
+                                    <button type="button" class="hero-dot @(di == 0 ? "active" : "")" data-slide="@di" role="tab" aria-label="Slide @(di + 1)" aria-selected="@(di == 0 ? "true" : "false")"></button>
+                                }
+                            </div>
+                        </div>
+                        @foreach (var hero in Model.HeroArticles.Skip(1).Take(2))
+                        {
+                            <article class="hero-card @hero.SizeClass hero-side-card @(string.IsNullOrWhiteSpace(hero.ImageUrl) ? "" : "has-photo")">
+                                <div class="hero-bg">
+                                    @if (!string.IsNullOrWhiteSpace(hero.ImageUrl))
+                                    {
+                                        <img class="hero-photo"
+                                             src="@hero.ImageUrl"
+                                             asp-append-version="true"
+                                             alt=""
+                                             loading="lazy" />
+                                    }
+                                    <div class="hero-pattern"></div>
+                                    <div class="hero-photo-shade"></div>
+                                    @if (string.IsNullOrWhiteSpace(hero.ImageUrl))
+                                    {
+                                        <span class="hero-emoji" aria-hidden="true">@hero.Emoji</span>
+                                    }
+                                </div>
+                                <div class="hero-overlay">
+                                    <div class="hero-src">@hero.Source</div>
+                                    <div class="hero-ttl">@hero.Title</div>
+                                    @if (!string.IsNullOrWhiteSpace(hero.Url))
+                                    {
+                                        <a href="@hero.Url" class="hero-link">Read more →</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="#" class="hero-link">Read more →</a>
+                                    }
+                                </div>
+                            </article>
+                        }
+                    </div>
+
+                    <section class="pinned-section reveal" id="pinnedSection" hidden>
+                        <div class="sec-label">
+                            Pinned Applications
+                            <span class="apps-count" id="pinnedCount">0 pinned</span>
+                        </div>
+                        <div class="apps-grid pinned-grid" id="pinnedGrid"></div>
+                    </section>
+
+                    <section class="reveal">
+                        <div class="sec-label">
+                            All ECEWS Applications
+                            <span class="apps-count" id="appsCount">@Model.Applications.Count apps</span>
+                        </div>
+                        <div class="apps-grid" id="appsGrid">
+                            @foreach (var app in Model.Applications)
+                            {
+                                <div class="app-card"
+                                     data-id="@app.Id"
+                                     data-cat="@string.Join(" ", app.Categories)"
+                                     data-name="@app.Name.ToLowerInvariant()"
+                                     data-url="@app.Url"
+                                     data-external="@app.IsExternal.ToString().ToLowerInvariant()"
+                                     tabindex="0"
+                                     role="button">
+                                    <button class="pin-btn" aria-label="Pin @app.Name" title="Pin application">
+                                        <i class="ti ti-pin"></i>
+                                    </button>
+                                    <div class="app-icon @app.ColorClass@(string.IsNullOrEmpty(app.LogoUrl) ? "" : " app-icon-logo")">
+                                        @if (!string.IsNullOrEmpty(app.LogoUrl))
+                                        {
+                                            <img src="@app.LogoUrl" alt="" />
+                                        }
+                                        else
+                                        {
+                                            <i class="ti @app.IconClass"></i>
+                                        }
+                                    </div>
+                                    <div class="app-card-body">
+                                        <div class="app-name">@app.Name</div>
+                                        <div class="app-tag">@(string.IsNullOrEmpty(app.Description) ? app.Tag : app.Description)</div>
+                                    </div>
+                                </div>
+                            }
+                            <div class="no-results" id="noResults">
+                                <i class="ti ti-search-off"></i>
+                                No applications match your search
+                            </div>
+                        </div>
+                        @if (Model.Applications.Count == 0)
+                        {
+                            <p class="apps-empty-note">
+                                No apps are assigned to your account yet. Contact an administrator to request access.
+                            </p>
+                        }
+                        <a href="#appsGrid" class="pro-view-all">Browse applications →</a>
+                    </section>
+                </main>
+
+                <aside class="pro-rail">
+                    <div class="side-card reveal">
+                        <div class="s-hdr">
+                            <span class="s-ttl">
+                                <i class="ti ti-cloud"></i>
+                                <span id="wxLocShortText">Weather · @Model.Weather.Location.Split(',')[0]</span>
+                            </span>
+                            <a class="s-more" href="/Home/Weather">Full forecast ›</a>
+                        </div>
+                        <div class="wx-place-row">
+                            <button type="button" class="wx-loc-btn" id="wxHomeLocBtn" title="Use current location">
+                                <i class="ti ti-current-location"></i>
+                            </button>
+                            <select id="wxHomeStateSelect" class="wx-state-select wx-state-select-sm" aria-label="Weather location">
+                                <option value="__current__">My current location</option>
+                            </select>
+                        </div>
+                        <div class="wx-body">
+                            <div class="wx-top">
+                                <div>
+                                    <div class="wx-tmp" id="wxTemp">@Model.Weather.Temperature</div>
+                                    <div class="wx-loc" id="wxLoc">@Model.Weather.Location</div>
+                                    <div class="wx-dsc" id="wxDesc">@Model.Weather.Description</div>
+                                </div>
+                                <div class="wx-ic" aria-hidden="true" id="wxIcon">@Model.Weather.Icon</div>
+                            </div>
+                            <div class="wx-fc" id="wxForecast">
+                                @for (var i = 0; i < Model.Weather.Forecast.Count; i++)
+                                {
+                                    var day = Model.Weather.Forecast[i];
+                                    <div class="fc" id="wxDay-@i">
+                                        <div class="fc-d" id="wxDayName-@i">@day.Day</div>
+                                        <div class="fc-i" id="wxDayIcon-@i">@day.Icon</div>
+                                        <div class="fc-h" id="wxHigh-@i">@day.High</div>
+                                        <div class="fc-l" id="wxLow-@i">@day.Low</div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="side-card reveal" id="quickAccessCard">
+                        <div class="s-hdr">
+                            <span class="s-ttl"><i class="ti ti-history"></i>Quick Access</span>
+                            <span class="s-more" id="recentCountLabel">Recently visited</span>
+                        </div>
+                        <div class="ql-list" id="quickAccessList">
+                            <div class="ql-empty" id="quickAccessEmpty">
+                                <i class="ti ti-apps"></i>
+                                <span>Apps you open will appear here</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="side-card reveal">
+                        <div class="s-hdr">
+                            <span class="s-ttl"><i class="ti ti-news"></i>Top Updates</span>
+                            <a class="s-more" href="/Home/Notifications">See all ›</a>
+                        </div>
+                        <div class="news-list">
+                            @foreach (var news in Model.News.Take(3))
+                            {
+                                <a class="ni" href="@(string.IsNullOrWhiteSpace(news.Url) ? "/Home/Notifications" : news.Url)"
+                                   style="text-decoration:none;color:inherit;display:flex;">
+                                    <div class="ni-ic"><i class="ti ti-bell"></i></div>
+                                    <div>
+                                        <div class="ni-txt">@news.Text</div>
+                                        <div class="ni-src">@news.Source</div>
+                                    </div>
+                                </a>
+                            }
+                            @if (Model.News.Count == 0)
+                            {
+                                <article class="ni">
+                                    <div class="ni-ic"><i class="ti ti-bell-off"></i></div>
+                                    <div>
+                                        <div class="ni-txt">No updates right now</div>
+                                        <div class="ni-src">Check back soon</div>
+                                    </div>
+                                </article>
+                            }
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+
+    <footer class="portal-footer pro-footer">
+        <div class="footer-brand">
+            <div>
+                © @DateTime.Now.Year · All rights reserved
+            </div>
+        </div>
+        <nav class="footer-links" aria-label="Footer links">
+            <a href="/Home/Privacy">Privacy Policy</a>
+            <a href="https://helpdesk.ecews.org" target="_blank" rel="noopener noreferrer">IT Support</a>
+            <a href="https://helpdesk.ecews.org" target="_blank" rel="noopener noreferrer">Contact Help Desk</a>
+        </nav>
+    </footer>
+
+    <div class="cmd-overlay" id="cmdOverlay" hidden>
+        <div class="cmd-palette" role="dialog" aria-label="Command palette">
+            <div class="cmd-search">
+                <i class="ti ti-search"></i>
+                <input type="text" id="cmdInput" placeholder="Search applications, pages, actions..." autocomplete="off" />
+                <kbd>ESC</kbd>
+            </div>
+            <div class="cmd-results" id="cmdResults"></div>
+            <div class="cmd-footer">
+                <span><kbd>↑↓</kbd> Navigate</span>
+                <span><kbd>Enter</kbd> Open</span>
+                <span><kbd>Esc</kbd> Close</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="searchInput" value="" />

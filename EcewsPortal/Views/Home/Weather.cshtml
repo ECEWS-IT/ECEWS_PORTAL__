@@ -1,0 +1,175 @@
+@model WeatherPageModel
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Weather Forecast";
+    var wx = Model.Weather;
+}
+
+<div class="portal portal-pro admin-page pp-page" id="portal">
+    <header class="pro-header">
+        <div class="pro-header-left">
+            <a href="/" class="logo-block" aria-label="ECEWS Portal home">
+                <img src="~/images/ecews-logo-transparent.png" asp-append-version="true" alt="ECEWS" class="logo-img" width="200" height="44" />
+            </a>
+        </div>
+        <div class="pro-header-center">
+            <h1 class="admin-header-title">Weather</h1>
+        </div>
+        <div class="pro-header-right">
+            <button class="pro-icon-btn" id="themeBtn" aria-label="Toggle light/dark theme" title="Theme">
+                <i class="ti ti-moon" id="themeIc"></i>
+            </button>
+            <a href="/" class="admin-back-btn"><i class="ti ti-home"></i> Portal</a>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <div>
+                <div class="admin-crumb">Portal / Weather</div>
+                <h2 class="admin-page-title">7-day forecast</h2>
+            </div>
+            <div class="wx-page-tools">
+                <button type="button" class="admin-ghost-btn" id="wxUseLocationBtn" title="Use my current location">
+                    <i class="ti ti-current-location"></i> Current location
+                </button>
+                <label class="wx-state-label" for="wxStateSelect">
+                    <span>State</span>
+                    <select id="wxStateSelect" class="wx-state-select">
+                        <option value="__current__">My current location</option>
+                        @foreach (var p in Model.Places)
+                        {
+                            <option value="@p.Id" data-lat="@p.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture)" data-lon="@p.Lon.ToString(System.Globalization.CultureInfo.InvariantCulture)">@p.Label</option>
+                        }
+                    </select>
+                </label>
+                <button type="button" class="admin-primary-btn" id="wxRefreshBtn">
+                    <i class="ti ti-refresh"></i> Refresh
+                </button>
+            </div>
+        </div>
+
+        <section class="admin-table-shell wx-page-now" id="wxPageNow">
+            <div class="wx-page-icon" id="wxPageIcon" aria-hidden="true">@wx.Icon</div>
+            <div>
+                <div class="wx-page-temp" id="wxPageTemp">@wx.Temperature</div>
+                <div class="wx-page-loc" id="wxPageLoc">@wx.Location</div>
+                <div class="wx-page-desc" id="wxPageDesc">@wx.Description</div>
+            </div>
+            <p class="wx-page-note" id="wxPageNote">Detecting location…</p>
+        </section>
+
+        <section class="admin-table-shell wx-page-days" aria-label="Daily forecast">
+            <div class="wx-page-grid" id="wxPageForecast">
+                @for (var i = 0; i < Math.Max(wx.Forecast.Count, 7); i++)
+                {
+                    var day = i < wx.Forecast.Count ? wx.Forecast[i] : null;
+                    <div class="wx-page-day" id="wxPageDay-@i">
+                        <div class="wx-page-day-name" id="wxPageDayName-@i">@(day?.Day ?? "—")</div>
+                        <div class="wx-page-day-icon" id="wxPageDayIcon-@i">@(day?.Icon ?? "·")</div>
+                        <div class="wx-page-day-hi" id="wxPageHigh-@i">@(day?.High ?? "—")</div>
+                        <div class="wx-page-day-lo" id="wxPageLow-@i">@(day?.Low ?? "—")</div>
+                    </div>
+                }
+            </div>
+        </section>
+    </main>
+</div>
+
+@section Scripts {
+<script>
+(function () {
+  var note = document.getElementById('wxPageNote');
+  var select = document.getElementById('wxStateSelect');
+  var KEY = 'ecews-weather-place';
+
+  function apply(data) {
+    if (!data) return;
+    var set = function (id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
+    set('wxPageTemp', data.temperature || '—');
+    set('wxPageLoc', data.location || 'Nigeria');
+    set('wxPageDesc', data.description || '');
+    set('wxPageIcon', data.icon || '⛅');
+    var days = data.forecast || [];
+    for (var i = 0; i < 7; i++) {
+      var d = days[i];
+      set('wxPageDayName-' + i, d ? d.day : '—');
+      set('wxPageDayIcon-' + i, d ? d.icon : '·');
+      set('wxPageHigh-' + i, d ? d.high : '—');
+      set('wxPageLow-' + i, d ? d.low : '—');
+    }
+  }
+
+  function savePlace(place) {
+    try { localStorage.setItem(KEY, JSON.stringify(place)); } catch (e) {}
+  }
+
+  function loadSaved() {
+    try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; }
+  }
+
+  async function fetchWeather(query) {
+    var res = await fetch('/api/portal/weather?' + query + '&days=7', {
+      credentials: 'same-origin',
+      headers: { 'Accept': 'application/json' }
+    });
+    if (res.ok) return res.json();
+    return EcewsWeather.fetchDirect(query, 7);
+  }
+
+  async function useCurrentLocation() {
+    if (note) note.textContent = 'Getting your location…';
+    if (select) select.value = '__current__';
+    var coords = await EcewsWeather.getCurrentCoords();
+    var nearest = EcewsWeather.nearestPlace(coords.lat, coords.lon);
+    var label = 'Near ' + nearest.label;
+    savePlace({ mode: 'current', lat: coords.lat, lon: coords.lon, name: label });
+    var data = await fetchWeather('lat=' + coords.lat + '&lon=' + coords.lon + '&name=' + encodeURIComponent(label));
+    apply(data);
+    if (note) note.textContent = 'Live · Current location · ' + label;
+  }
+
+  async function useState(id) {
+    if (!id || id === '__current__') return useCurrentLocation();
+    if (note) note.textContent = 'Updating…';
+    savePlace({ mode: 'state', id: id });
+    var data = await fetchWeather('state=' + encodeURIComponent(id));
+    apply(data);
+    if (note) note.textContent = 'Live · ' + (data.location || id) + ' · Open-Meteo';
+  }
+
+  async function load() {
+    var saved = loadSaved();
+    try {
+      if (saved && saved.mode === 'state' && saved.id) {
+        if (select) select.value = saved.id;
+        await useState(saved.id);
+      } else {
+        await useCurrentLocation();
+      }
+    } catch (e) {
+      try {
+        if (select) select.value = 'lagos';
+        await useState('lagos');
+        if (note) note.textContent = 'Location unavailable — showing Lagos.';
+      } catch (e2) {
+        if (note) note.textContent = 'Live weather unavailable.';
+      }
+    }
+  }
+
+  select?.addEventListener('change', function () {
+    useState(select.value).catch(function () {
+      if (note) note.textContent = 'Could not load weather for that location.';
+    });
+  });
+  document.getElementById('wxUseLocationBtn')?.addEventListener('click', function () {
+    useCurrentLocation().catch(function () {
+      if (note) note.textContent = 'Could not access your location. Allow location permission or pick a state.';
+    });
+  });
+  document.getElementById('wxRefreshBtn')?.addEventListener('click', load);
+  load();
+})();
+</script>
+}

@@ -1,0 +1,60 @@
+@model VerifyOtpViewModel
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Enter code";
+}
+
+<div class="portal portal-pro admin-page" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;">
+    <div class="admin-panel" style="max-width:440px;width:100%;padding:28px;">
+        <div style="text-align:center;margin-bottom:20px;">
+            <i class="ti ti-password" style="font-size:36px;color:var(--brand);"></i>
+            <h1 style="margin:10px 0 6px;font-size:22px;color:var(--ink);">Authentication code</h1>
+            <p style="margin:0;color:var(--ink-soft);font-size:13px;line-height:1.5;">
+                Enter the code we emailed you to open the portal.
+            </p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="admin-alert admin-alert-err" role="alert" style="margin-bottom:14px;">
+                <i class="ti ti-alert-circle"></i>
+                <span>@Model.ErrorMessage</span>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.InfoMessage))
+        {
+            <div class="admin-alert admin-alert-ok" role="status" style="margin-bottom:14px;">
+                <i class="ti ti-mail-check"></i>
+                <span>@Model.InfoMessage</span>
+            </div>
+        }
+
+        <form asp-action="VerifyOtp" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Email" />
+            <input type="hidden" asp-for="RedirectUri" />
+            <div class="admin-field" style="margin-bottom:8px;">
+                <label>Email</label>
+                <input type="email" value="@Model.Email" disabled />
+            </div>
+            <div class="admin-field" style="margin-bottom:14px;">
+                <label asp-for="Code">Authentication code</label>
+                <input asp-for="Code" type="text" inputmode="numeric" autocomplete="one-time-code"
+                       placeholder="6-digit code" required maxlength="8"
+                       style="letter-spacing:4px;font-size:18px;font-weight:600;" />
+                <span asp-validation-for="Code" style="color:#b42318;font-size:12px;"></span>
+            </div>
+            <button type="submit" class="admin-primary-btn" style="width:100%;justify-content:center;">
+                <i class="ti ti-lock-open"></i>
+                Open portal
+            </button>
+        </form>
+
+        <div style="margin-top:16px;text-align:center;">
+            <a href="@Url.Action("Login", "Account", new { redirectUri = Model.RedirectUri })"
+               style="font-size:13px;color:var(--brand);">
+                Use a different email / resend code
+            </a>
+        </div>
+    </div>
+</div>

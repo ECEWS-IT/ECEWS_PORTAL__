@@ -1,0 +1,494 @@
+@model AdminSettingsViewModel
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Admin Settings";
+    var customCount = Model.AllApps.Count(a => a.IsCustom);
+    var showComposer = !string.IsNullOrEmpty(Model.Form.Name)
+        || !string.IsNullOrEmpty(Model.Form.Url)
+        || !string.IsNullOrEmpty(Model.ErrorMessage);
+}
+
+<div class="portal portal-pro admin-page" id="portal">
+    <header class="pro-header">
+        <div class="pro-header-left">
+            <a href="/" class="logo-block" aria-label="ECEWS Portal home">
+                <img src="~/images/ecews-logo-transparent.png"
+                     asp-append-version="true"
+                     alt="ECEWS"
+                     class="logo-img"
+                     width="200"
+                     height="44" />
+            </a>
+        </div>
+        <div class="pro-header-center">
+            <h1 class="admin-header-title">Admin Settings</h1>
+        </div>
+        <div class="pro-header-right">
+            <button class="pro-icon-btn" id="themeBtn" aria-label="Toggle light/dark theme" title="Theme">
+                <i class="ti ti-moon" id="themeIc"></i>
+            </button>
+            <a href="/" class="admin-back-btn">
+                <i class="ti ti-home"></i>
+                Portal
+            </a>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <div>
+                <div class="admin-crumb">Portal / Settings</div>
+                <h2 class="admin-page-title">Applications</h2>
+            </div>
+            <div class="admin-topbar-meta">
+                @if (AdminAccessService.CanAccess(User, AdminPages.StaffAccess))
+                {
+                    <a href="/Admin/Users" class="admin-ghost-btn" style="text-decoration:none;">
+                        <i class="ti ti-user-cog"></i> Users
+                    </a>
+                }
+                @if (AdminAccessService.CanAccess(User, AdminPages.ActiveUsers))
+                {
+                    <a href="/Admin/ActiveUsers" class="admin-ghost-btn" style="text-decoration:none;">
+                        <i class="ti ti-users"></i> Active users
+                    </a>
+                }
+                @if (AdminAccessService.CanAccess(User, AdminPages.Analytics))
+                {
+                    <a href="/Admin/Analytics" class="admin-ghost-btn" style="text-decoration:none;">
+                        <i class="ti ti-chart-area-line"></i> Analytics
+                    </a>
+                }
+                @if (AdminAccessService.IsSuperAdmin(User))
+                {
+                    <a href="/Admin/Administrators" class="admin-ghost-btn" style="text-decoration:none;">
+                        <i class="ti ti-crown"></i> Administrators
+                    </a>
+                }
+                <span class="admin-chip"><strong>@Model.AllApps.Count</strong> apps</span>
+                <span class="admin-chip"><strong>@customCount</strong> custom</span>
+                <button type="button" class="admin-primary-btn" id="toggleAddForm">
+                    <i class="ti ti-plus"></i>
+                    Add app
+                </button>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+        {
+            <div class="admin-alert admin-alert-ok" role="status">
+                <i class="ti ti-circle-check"></i>
+                <span>@Model.SuccessMessage</span>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="admin-alert admin-alert-err" role="alert">
+                <i class="ti ti-alert-circle"></i>
+                <span>@Model.ErrorMessage</span>
+            </div>
+        }
+
+        <section class="admin-composer" style="margin-bottom:20px;">
+            <div class="admin-composer-hdr">
+                <div>
+                    <h3>Staff email login</h3>
+                    <p>
+                        Only emails listed here can open the portal with email (no authentication code).
+                        Microsoft directory login still works.
+                        Currently allowlisted: <strong>@Model.StaffLoginEmailCount</strong>
+                    </p>
+                </div>
+            </div>
+            <form asp-action="SaveStaffLoginEmails" method="post" class="admin-composer-form">
+                @Html.AntiForgeryToken()
+                <div class="admin-field admin-field-wide">
+                    <label for="staffLoginEmailsText">Allowed staff emails</label>
+                    <textarea id="staffLoginEmailsText" name="staffLoginEmailsText" rows="6"
+                              placeholder="one.person@ecews.org&#10;another.person@ecews.org"
+                              style="width:100%;min-height:120px;font-family:ui-monospace,Consolas,monospace;font-size:13px;line-height:1.45;">@Model.StaffLoginEmailsText</textarea>
+                    <div style="margin-top:6px;font-size:12px;color:var(--ink-soft);">
+                        One email per line (commas also accepted). Staff enter their email and continue — no code is required.
+                    </div>
+                </div>
+                <div class="admin-composer-actions">
+                    <button type="submit" class="admin-primary-btn">
+                        <i class="ti ti-device-floppy"></i>
+                        Save allowlist
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <section class="admin-composer" id="addComposer" @(showComposer ? null : "hidden")>
+            <div class="admin-composer-hdr">
+                <div>
+                    <h3>New application</h3>
+                    <p>Fill in the details, then publish to the portal.</p>
+                </div>
+                <button type="button" class="admin-icon-btn" id="closeAddForm" aria-label="Close">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+            <form asp-action="Settings" method="post" enctype="multipart/form-data" class="admin-composer-form">
+                @Html.AntiForgeryToken()
+                <div class="admin-composer-grid">
+                    <div class="admin-field">
+                        <label for="Name">App name</label>
+                        <input id="Name" name="Name" type="text" value="@Model.Form.Name"
+                               placeholder="Leave Management" required maxlength="80" />
+                    </div>
+                    <div class="admin-field">
+                        <label for="Url">URL</label>
+                        <input id="Url" name="Url" type="url" value="@Model.Form.Url"
+                               placeholder="https://example.ecews.org" required />
+                    </div>
+                    <div class="admin-field admin-field-wide">
+                        <label for="Description">Description</label>
+                        <input id="Description" name="Description" type="text" value="@Model.Form.Description"
+                               placeholder="Short description shown on the portal" maxlength="200" />
+                    </div>
+                    <div class="admin-field">
+                        <label for="Logo">Logo</label>
+                        <label class="admin-file" for="Logo">
+                            <i class="ti ti-paperclip"></i>
+                            <span id="logoFileName">Optional · max 2 MB</span>
+                        </label>
+                        <input id="Logo" name="Logo" type="file" class="admin-file-input"
+                               accept=".png,.jpg,.jpeg,.gif,.webp,.svg,image/*" />
+                    </div>
+                    <div class="admin-field admin-field-wide">
+                        <label>Who can see this app</label>
+                        <div class="admin-visibility" data-visibility-root>
+                            <label class="admin-visibility-option">
+                                <input type="radio" name="Visibility" value="all"
+                                       @(AppVisibility.IsSelected(Model.Form.Visibility) ? null : "checked")
+                                       data-visibility-mode />
+                                <span>Everyone</span>
+                            </label>
+                            <label class="admin-visibility-option">
+                                <input type="radio" name="Visibility" value="selected"
+                                       @(AppVisibility.IsSelected(Model.Form.Visibility) ? "checked" : null)
+                                       data-visibility-mode />
+                                <span>Selected users</span>
+                            </label>
+                            <div class="admin-visibility-users" data-visibility-users
+                                 @(AppVisibility.IsSelected(Model.Form.Visibility) ? null : "hidden")>
+                                <input type="search" class="admin-visibility-filter" placeholder="Filter staff…"
+                                       data-visibility-filter autocomplete="off" />
+                                <div class="admin-visibility-list">
+                                    @{
+                                        var createSelected = new HashSet<string>(
+                                            Model.Form.AllowedEmails ?? [],
+                                            StringComparer.OrdinalIgnoreCase);
+                                    }
+                                    @foreach (var user in Model.StaffUsers)
+                                    {
+                                        <label class="admin-visibility-user" data-user-filter="@user.DisplayName.ToLowerInvariant() @user.Email.ToLowerInvariant()">
+                                            <input type="checkbox" name="AllowedEmails" value="@user.Email"
+                                                   @(createSelected.Contains(user.Email) ? "checked" : null) />
+                                            <span>
+                                                <strong>@user.DisplayName</strong>
+                                                <small>@user.Email</small>
+                                            </span>
+                                        </label>
+                                    }
+                                </div>
+                                <label class="admin-visibility-extra" for="ExtraEmailsText">
+                                    Extra emails (optional)
+                                    <textarea id="ExtraEmailsText" name="ExtraEmailsText" rows="2"
+                                              placeholder="one@ecews.org, another@ecews.org">@Model.Form.ExtraEmailsText</textarea>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-composer-actions">
+                    <button type="button" class="admin-ghost-btn" id="cancelAddForm">Cancel</button>
+                    <button type="submit" class="admin-primary-btn">
+                        <i class="ti ti-rocket"></i>
+                        Publish
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <section class="admin-table-shell">
+            <div class="admin-table-toolbar">
+                <div class="admin-search">
+                    <i class="ti ti-search"></i>
+                    <input type="search" id="adminAppSearch" placeholder="Filter by name or description…" autocomplete="off" />
+                </div>
+            </div>
+
+            @if (Model.AllApps.Count == 0)
+            {
+                <div class="admin-empty">
+                    <i class="ti ti-apps-off"></i>
+                    <p>No applications yet. Click Add app to create one.</p>
+                </div>
+            }
+            else
+            {
+                <div class="admin-table-wrap" id="adminTableWrap">
+                    <table class="admin-table" id="adminAppTable">
+                        <thead>
+                            <tr>
+                                <th class="col-app">Application</th>
+                                <th class="col-url">URL</th>
+                                <th class="col-desc">Description</th>
+                                <th class="col-actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var app in Model.AllApps)
+                        {
+                            var desc = string.IsNullOrEmpty(app.Description) ? app.Tag : app.Description;
+                            var formId = $"edit-{app.Id}";
+                            var selectedMode = AppVisibility.IsSelected(app.Visibility);
+                            var allowed = new HashSet<string>(app.AllowedEmails ?? [], StringComparer.OrdinalIgnoreCase);
+                            var visibilityLabel = selectedMode
+                                ? $"{allowed.Count} selected"
+                                : "Everyone";
+                            <tr class="admin-row"
+                                data-name="@app.Name.ToLowerInvariant()"
+                                data-desc="@desc.ToLowerInvariant()">
+                                <td class="col-app">
+                                    <div class="admin-app-cell">
+                                        <div class="admin-app-icon @app.ColorClass">
+                                            @if (!string.IsNullOrEmpty(app.LogoUrl))
+                                            {
+                                                <img src="@app.LogoUrl" alt="" />
+                                            }
+                                            else
+                                            {
+                                                <i class="ti @app.IconClass"></i>
+                                            }
+                                        </div>
+                                        <div class="admin-app-cell-main">
+                                            <form asp-action="UpdateApp" method="post" id="@formId">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="Id" value="@app.Id" />
+                                                <div class="admin-name-line">
+                                                    <input name="Name" type="text" value="@app.Name"
+                                                           class="admin-inline-input"
+                                                           required maxlength="80" aria-label="Name for @app.Name" />
+                                                    @if (app.IsCustom)
+                                                    {
+                                                        <span class="admin-pill">Custom</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="admin-pill admin-pill-muted">Built-in</span>
+                                                    }
+                                                    <span class="admin-pill @(selectedMode ? "admin-pill-warn" : "admin-pill-muted")" title="Who can see this app">
+                                                        <i class="ti ti-eye"></i> @visibilityLabel
+                                                    </span>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="col-url" data-label="URL">
+                                    <input form="@formId" name="Url" type="url" value="@app.Url"
+                                           class="admin-inline-input"
+                                           placeholder="https://" aria-label="URL for @app.Name" />
+                                </td>
+                                <td class="col-desc" data-label="Description">
+                                    <input form="@formId" name="Description" type="text" value="@desc"
+                                           class="admin-inline-input"
+                                           placeholder="Description" maxlength="200"
+                                           aria-label="Description for @app.Name" />
+                                </td>
+                                <td class="col-actions">
+                                    <div class="admin-row-actions">
+                                        <button type="button" class="admin-ghost-btn admin-visibility-toggle"
+                                                data-target="vis-@app.Id" aria-expanded="false">
+                                            <i class="ti ti-users"></i>
+                                            Access
+                                        </button>
+                                        <button type="submit" form="@formId" class="admin-save-btn">
+                                            <i class="ti ti-device-floppy"></i>
+                                            Save
+                                        </button>
+                                        <form asp-action="DeleteApp" method="post"
+                                              onsubmit="return confirm('Remove “@app.Name” from the portal?');">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@app.Id" />
+                                            <button type="submit" class="admin-delete-btn" aria-label="Delete @app.Name">
+                                                <i class="ti ti-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="admin-visibility-row" id="vis-@app.Id" hidden>
+                                <td colspan="4">
+                                    <div class="admin-visibility" data-visibility-root>
+                                        <div class="admin-visibility-hdr">
+                                            Who can see <strong>@app.Name</strong>
+                                        </div>
+                                        <label class="admin-visibility-option">
+                                            <input form="@formId" type="radio" name="Visibility" value="all"
+                                                   @(selectedMode ? null : "checked") data-visibility-mode />
+                                            <span>Everyone</span>
+                                        </label>
+                                        <label class="admin-visibility-option">
+                                            <input form="@formId" type="radio" name="Visibility" value="selected"
+                                                   @(selectedMode ? "checked" : null) data-visibility-mode />
+                                            <span>Selected users</span>
+                                        </label>
+                                        <div class="admin-visibility-users" data-visibility-users
+                                             @(selectedMode ? null : "hidden")>
+                                            <input type="search" class="admin-visibility-filter" placeholder="Filter staff…"
+                                                   data-visibility-filter autocomplete="off" />
+                                            <div class="admin-visibility-list">
+                                                @foreach (var user in Model.StaffUsers)
+                                                {
+                                                    <label class="admin-visibility-user" data-user-filter="@user.DisplayName.ToLowerInvariant() @user.Email.ToLowerInvariant()">
+                                                        <input form="@formId" type="checkbox" name="AllowedEmails" value="@user.Email"
+                                                               @(allowed.Contains(user.Email) ? "checked" : null) />
+                                                        <span>
+                                                            <strong>@user.DisplayName</strong>
+                                                            <small>@user.Email</small>
+                                                        </span>
+                                                    </label>
+                                                }
+                                            </div>
+                                            @{
+                                                var extras = allowed
+                                                    .Where(e => !Model.StaffUsers.Any(u => string.Equals(u.Email, e, StringComparison.OrdinalIgnoreCase)))
+                                                    .OrderBy(e => e, StringComparer.OrdinalIgnoreCase);
+                                            }
+                                            <label class="admin-visibility-extra">
+                                                Extra emails (optional)
+                                                <textarea form="@formId" name="ExtraEmailsText" rows="2"
+                                                          placeholder="one@ecews.org, another@ecews.org">@string.Join(Environment.NewLine, extras)</textarea>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="admin-empty admin-empty-filter" id="adminNoResults" hidden>
+                    <i class="ti ti-search-off"></i>
+                    <p>No apps match your filter.</p>
+                </div>
+            }
+        </section>
+    </main>
+</div>
+
+@section Scripts {
+    <script>
+      (function () {
+        var btn = document.getElementById('themeBtn');
+        var ic = document.getElementById('themeIc');
+        if (btn) {
+          function syncTheme() {
+            var dark = document.documentElement.classList.contains('theme-dark');
+            if (ic) ic.className = dark ? 'ti ti-sun' : 'ti ti-moon';
+            btn.title = dark ? 'Light theme' : 'Dark theme';
+          }
+          syncTheme();
+          btn.addEventListener('click', function () {
+            var next = document.documentElement.classList.contains('theme-dark') ? 'light' : 'dark';
+            localStorage.setItem('ecews-theme', next);
+            document.documentElement.classList.toggle('theme-dark', next === 'dark');
+            syncTheme();
+          });
+        }
+
+        var composer = document.getElementById('addComposer');
+        function showComposer() {
+          if (!composer) return;
+          composer.hidden = false;
+          var name = document.getElementById('Name');
+          if (name) name.focus();
+        }
+        function hideComposer() {
+          if (composer) composer.hidden = true;
+        }
+        var openBtn = document.getElementById('toggleAddForm');
+        var closeBtn = document.getElementById('closeAddForm');
+        var cancelBtn = document.getElementById('cancelAddForm');
+        if (openBtn) openBtn.addEventListener('click', showComposer);
+        if (closeBtn) closeBtn.addEventListener('click', hideComposer);
+        if (cancelBtn) cancelBtn.addEventListener('click', hideComposer);
+
+        var logo = document.getElementById('Logo');
+        var logoName = document.getElementById('logoFileName');
+        if (logo && logoName) {
+          logo.addEventListener('change', function () {
+            logoName.textContent = logo.files && logo.files[0]
+              ? logo.files[0].name
+              : 'Optional · max 2 MB';
+          });
+        }
+
+        var search = document.getElementById('adminAppSearch');
+        var table = document.getElementById('adminAppTable');
+        var wrap = document.getElementById('adminTableWrap');
+        var empty = document.getElementById('adminNoResults');
+        if (search && table) {
+          search.addEventListener('input', function () {
+            var q = search.value.trim().toLowerCase();
+            var rows = table.querySelectorAll('tbody .admin-row');
+            var visible = 0;
+            rows.forEach(function (row) {
+              var hay = (row.getAttribute('data-name') || '') + ' ' + (row.getAttribute('data-desc') || '');
+              var show = !q || hay.indexOf(q) !== -1;
+              row.hidden = !show;
+              if (show) visible++;
+              var next = row.nextElementSibling;
+              if (next && next.classList.contains('admin-visibility-row') && next.hidden === false && !show) {
+                next.hidden = true;
+              }
+            });
+            if (empty) empty.hidden = visible > 0;
+            if (wrap) wrap.hidden = visible === 0;
+          });
+        }
+
+        document.querySelectorAll('[data-visibility-root]').forEach(function (root) {
+          var users = root.querySelector('[data-visibility-users]');
+          var modes = root.querySelectorAll('[data-visibility-mode]');
+          function syncMode() {
+            var selected = Array.prototype.some.call(modes, function (m) {
+              return m.checked && m.value === 'selected';
+            });
+            if (users) users.hidden = !selected;
+          }
+          modes.forEach(function (mode) {
+            mode.addEventListener('change', syncMode);
+          });
+          syncMode();
+
+          var filter = root.querySelector('[data-visibility-filter]');
+          if (filter) {
+            filter.addEventListener('input', function () {
+              var q = filter.value.trim().toLowerCase();
+              root.querySelectorAll('.admin-visibility-user').forEach(function (row) {
+                var hay = row.getAttribute('data-user-filter') || '';
+                row.hidden = !!(q && hay.indexOf(q) === -1);
+              });
+            });
+          }
+        });
+
+        document.querySelectorAll('.admin-visibility-toggle').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var id = btn.getAttribute('data-target');
+            var panel = id ? document.getElementById(id) : null;
+            if (!panel) return;
+            var open = panel.hidden;
+            panel.hidden = !open;
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          });
+        });
+      })();
+    </script>
+}

@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ECEWS Portal — Improving Education and Health in Nigeria</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-900: #0a3d2e;
+      --green-800: #0d4a38;
+      --green-700: #0f6e56;
+      --green-600: #1a7c4f;
+      --green-500: #1d9e75;
+      --green-400: #3bd68a;
+      --green-100: #e1f5ee;
+      --green-50: #f0faf6;
+      --white: #ffffff;
+      --gray-50: #f4f7f9;
+      --gray-100: #eef2f6;
+      --gray-200: #dde3ec;
+      --gray-400: #94a3b8;
+      --gray-500: #6b7d96;
+      --gray-700: #334155;
+      --gray-900: #1a2536;
+      --blue-600: #185fa5;
+      --blue-400: #378add;
+      --amber-700: #854f0b;
+      --amber-500: #ba7517;
+      --purple-600: #534ab7;
+      --coral-700: #993c1d;
+      --pink-700: #993556;
+      --red-700: #a32d2d;
+      --shadow-sm: 0 1px 3px rgba(15, 110, 86, 0.06);
+      --shadow-md: 0 4px 16px rgba(15, 110, 86, 0.08);
+      --shadow-lg: 0 12px 40px rgba(15, 110, 86, 0.12);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ── Theme tokens ── */
+    .portal.light {
+      --bg: var(--gray-50);
+      --bg2: var(--white);
+      --bg3: var(--white);
+      --border: var(--gray-200);
+      --text: var(--gray-900);
+      --muted: var(--gray-500);
+      --accent: var(--green-700);
+      --accent2: var(--green-600);
+      --accent-light: var(--green-100);
+      --tag: var(--gray-500);
+      --card-hover: var(--green-50);
+      --hero1: linear-gradient(145deg, var(--green-900) 0%, var(--green-600) 55%, var(--green-500) 100%);
+      --hero2: linear-gradient(145deg, #0d2a4a 0%, var(--blue-600) 60%, var(--blue-400) 100%);
+      --hero3: linear-gradient(145deg, #3d2408 0%, var(--amber-700) 55%, var(--amber-500) 100%);
+      --ticker: var(--white);
+      --mode-btn-bg: rgba(15, 110, 86, 0.05);
+      --mode-btn-col: var(--gray-500);
+      --badge-bg: rgba(15, 110, 86, 0.1);
+      --badge-col: var(--green-700);
+      --header-shadow: 0 1px 0 var(--gray-200), 0 4px 20px rgba(15, 110, 86, 0.04);
+      --body-pattern: radial-gradient(circle at 20% 20%, rgba(29, 158, 117, 0.04) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 80%, rgba(15, 110, 86, 0.03) 0%, transparent 50%);
+      --icon-green-bg: var(--green-100); --icon-green-col: var(--green-700);
+      --icon-blue-bg: #e6f1fb; --icon-blue-col: var(--blue-600);
+      --icon-amber-bg: #faeeda; --icon-amber-col: var(--amber-700);
+      --icon-purple-bg: #eeedfe; --icon-purple-col: var(--purple-600);
+      --icon-teal-bg: #e1f5ee; --icon-teal-col: var(--green-700);
+      --icon-coral-bg: #faece7; --icon-coral-col: var(--coral-700);
+      --icon-pink-bg: #fbeaf0; --icon-pink-col: var(--pink-700);
+      --icon-red-bg: #fcebeb; --icon-red-col: var(--red-700);
+      --qlink-hover: rgba(15, 110, 86, 0.04);
+      --news-hover: rgba(15, 110, 86, 0.03);
+    }
+
+    .portal.dark {
+      --bg: #0a1628;
+      --bg2: #112240;
+      --bg3: #152a42;
+      --border: #1e3a58;
+      --text: #f0f4f8;
+      --muted: #8ca0b8;
+      --accent: var(--green-600);
+      --accent2: var(--green-400);
+      --accent-light: rgba(26, 124, 79, 0.2);
+      --tag: #8ca0b8;
+      --card-hover: #1a3548;
+      --hero1: linear-gradient(145deg, #062a1f 0%, var(--green-700) 50%, var(--green-500) 100%);
+      --hero2: linear-gradient(145deg, #0a1f38 0%, var(--blue-600) 60%, #4a9de8 100%);
+      --hero3: linear-gradient(145deg, #2c1a0a 0%, var(--amber-700) 55%, var(--amber-500) 100%);
+      --ticker: #112240;
+      --mode-btn-bg: rgba(255, 255, 255, 0.06);
+      --mode-btn-col: #8ca0b8;
+      --badge-bg: rgba(59, 214, 138, 0.12);
+      --badge-col: var(--green-400);
+      --header-shadow: 0 1px 0 var(--border);
+      --body-pattern: radial-gradient(circle at 20% 20%, rgba(59, 214, 138, 0.04) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 80%, rgba(26, 124, 79, 0.05) 0%, transparent 50%);
+      --icon-green-bg: rgba(26, 124, 79, 0.25); --icon-green-col: var(--green-400);
+      --icon-blue-bg: rgba(24, 95, 165, 0.25); --icon-blue-col: #78b9f5;
+      --icon-amber-bg: rgba(133, 79, 11, 0.25); --icon-amber-col: #f5b942;
+      --icon-purple-bg: rgba(83, 74, 183, 0.25); --icon-purple-col: #b0aaff;
+      --icon-teal-bg: rgba(15, 110, 86, 0.25); --icon-teal-col: #5dcaa5;
+      --icon-coral-bg: rgba(153, 60, 29, 0.25); --icon-coral-col: #f0997b;
+      --icon-pink-bg: rgba(153, 53, 86, 0.25); --icon-pink-col: #ed93b1;
+      --icon-red-bg: rgba(163, 45, 45, 0.25); --icon-red-col: #f09595;
+      --qlink-hover: rgba(255, 255, 255, 0.04);
+      --news-hover: rgba(255, 255, 255, 0.04);
+    }
+
+    .portal {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    /* ── Header ── */
+    .portal-header {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--header-shadow);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 62px;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .logo-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--green-700), var(--green-500));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      color: #fff;
+      letter-spacing: -0.5px;
+      box-shadow: 0 4px 12px rgba(15, 110, 86, 0.35);
+    }
+
+    .logo-text {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+
+    .logo-sub {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 400;
+      margin-top: 1px;
+    }
+
+    .hdr-nav {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-family: inherit;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      background: var(--badge-bg);
+      color: var(--accent);
+    }
+
+    .nav-btn.active {
+      font-weight: 600;
+    }
+
+    .hdr-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .srch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--mode-btn-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 8px 14px;
+      width: 200px;
+      transition: all var(--transition);
+    }
+
+    .srch:focus-within {
+      border-color: var(--accent2);
+      box-shadow: 0 0 0 3px rgba(15, 110, 86, 0.12);
+    }
+
+    .srch input {
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 12px;
+      font-family: inherit;
+      width: 100%;
+    }
+
+    .srch input::placeholder { color: var(--muted); }
+    .srch-ic { color: var(--muted); font-size: 15px; }
+
+    .ctrl-group { display: flex; align-items: center; gap: 6px; }
+
+    .ctrl-btn {
+      background: var(--mode-btn-bg);
+      border: 1px solid var(--border);
+      color: var(--mode-btn-col);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 7px 12px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: all var(--transition);
+    }
+
+    .ctrl-btn:hover {
+      border-color: var(--accent2);
+      color: var(--accent2);
+    }
+
+    .ctrl-btn.active-mode {
+      background: var(--badge-bg);
+      color: var(--accent);
+      border-color: var(--accent2);
+    }
+
+    .so-btn {
+      background: linear-gradient(135deg, var(--green-700), var(--green-600));
+      border: none;
+      color: #fff;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(15, 110, 86, 0.3);
+    }
+
+    .so-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(15, 110, 86, 0.4);
+    }
+
+    /* ── Welcome strip ── */
+    .welcome-strip {
+      background: var(--body-pattern), var(--bg);
+      padding: 20px 24px 0;
+      transition: background var(--transition);
+    }
+
+    .welcome-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .welcome-text h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .welcome-text p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .welcome-text p span {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .stat-pills {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+    }
+
+    .stat-pill:hover {
+      border-color: var(--accent2);
+      transform: translateY(-1px);
+    }
+
+    .stat-pill-ic {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--badge-bg);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .stat-pill-val {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .stat-pill-lbl {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* ── Body layout ── */
+    .portal-body {
+      display: grid;
+      grid-template-columns: 1fr 270px;
+      gap: 20px;
+      padding: 20px 24px 24px;
+      background: var(--body-pattern), var(--bg);
+      flex: 1;
+      transition: background var(--transition);
+    }
+
+    .main-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-width: 0;
+    }
+
+    /* ── Hero grid ── */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      grid-template-rows: 210px 155px;
+      gap: 10px;
+    }
+
+    .hero-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-main .hero-bg { background: var(--hero1); }
+    .hero-sm1 .hero-bg { background: var(--hero2); }
+    .hero-sm2 .hero-bg { background: var(--hero3); }
+
+    .hero-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.15;
+      background-image:
+        radial-gradient(circle at 25% 25%, rgba(255,255,255,0.3) 1px, transparent 1px),
+        radial-gradient(circle at 75% 75%, rgba(255,255,255,0.2) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .hero-emoji {
+      font-size: 64px;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+      z-index: 1;
+      transition: transform var(--transition);
+    }
+
+    .hero-main .hero-emoji { font-size: 80px; }
+    .hero-sm2 .hero-emoji { font-size: 48px; }
+
+    .hero-card:hover .hero-emoji { transform: scale(1.08); }
+
+    .hero-main { grid-row: 1 / 3; }
+
+    .hero-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+      z-index: 2;
+    }
+
+    .hero-src {
+      font-size: 10px;
+      color: var(--green-400);
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .hero-ttl {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.45;
+      color: #fff;
+    }
+
+    .hero-main .hero-ttl { font-size: 16px; }
+
+    .hero-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: var(--green-600);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 10px;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      z-index: 3;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    /* ── Section label ── */
+    .sec-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .sec-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    .apps-count {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      background: var(--mode-btn-bg);
+      padding: 3px 8px;
+      border-radius: 10px;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    /* ── Apps grid ── */
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      transition: all var(--transition);
+    }
+
+    .apps-grid.compact .app-card { padding: 9px 10px; gap: 9px; }
+    .apps-grid.compact .app-icon { width: 30px; height: 30px; font-size: 13px; border-radius: 7px; }
+    .apps-grid.compact .app-name { font-size: 11.5px; }
+    .apps-grid.compact .app-tag { display: none; }
+
+    .app-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 13px 12px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      cursor: pointer;
+      transition: all var(--transition);
+      box-shadow: var(--shadow-sm);
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .app-card:hover {
+      background: var(--card-hover);
+      border-color: var(--accent2);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .app-card.hidden { display: none; }
+
+    .app-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      transition: all var(--transition);
+    }
+
+    .app-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .app-tag {
+      font-size: 10px;
+      color: var(--tag);
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    .aig { background: var(--icon-green-bg); color: var(--icon-green-col); }
+    .aib { background: var(--icon-blue-bg); color: var(--icon-blue-col); }
+    .aia { background: var(--icon-amber-bg); color: var(--icon-amber-col); }
+    .aip { background: var(--icon-purple-bg); color: var(--icon-purple-col); }
+    .ait { background: var(--icon-teal-bg); color: var(--icon-teal-col); }
+    .aic { background: var(--icon-coral-bg); color: var(--icon-coral-col); }
+    .aik { background: var(--icon-pink-bg); color: var(--icon-pink-col); }
+    .air { background: var(--icon-red-bg); color: var(--icon-red-col); }
+
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      font-size: 13px;
+      display: none;
+    }
+
+    .no-results.show { display: block; }
+
+    .no-results i {
+      font-size: 32px;
+      display: block;
+      margin-bottom: 10px;
+      opacity: 0.5;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .side-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+    }
+
+    .side-card:hover { box-shadow: var(--shadow-md); }
+
+    .s-hdr {
+      padding: 11px 15px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--mode-btn-bg);
+    }
+
+    .s-ttl {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .s-more {
+      font-size: 10px;
+      color: var(--muted);
+      cursor: pointer;
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+
+    .s-more:hover { color: var(--accent); }
+
+    /* Weather */
+    .wx-body { padding: 15px; }
+
+    .wx-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .wx-tmp {
+      font-size: 40px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    .wx-loc { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 4px; }
+    .wx-dsc { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .wx-ic { font-size: 44px; }
+
+    .wx-fc {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+    }
+
+    .fc {
+      background: var(--mode-btn-bg);
+      border-radius: 7px;
+      padding: 7px 4px;
+      text-align: center;
+      border: 1px solid transparent;
+      transition: all var(--transition);
+    }
+
+    .fc:hover { border-color: var(--accent2); }
+
+    .fc-d { font-size: 9px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+    .fc-i { font-size: 14px; margin-bottom: 2px; }
+    .fc-h { font-size: 11px; font-weight: 700; color: var(--text); }
+    .fc-l { font-size: 9px; color: var(--muted); }
+
+    /* Quick links & news */
+    .ql-list, .news-list { display: flex; flex-direction: column; }
+
+    .ql {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 15px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background var(--transition);
+      text-decoration: none;
+    }
+
+    .ql:last-child { border-bottom: none; }
+    .ql:hover { background: var(--qlink-hover); }
+
+    .ql-ic {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .ql-nm { font-size: 12px; font-weight: 600; color: var(--text); }
+    .ql-ds { font-size: 10px; color: var(--muted); margin-top: 1px; }
+    .ql-ext { font-size: 12px; color: var(--accent); margin-left: auto; flex-shrink: 0; }
+
+    .ni {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 11px 15px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+
+    .ni:last-child { border-bottom: none; }
+    .ni:hover { background: var(--news-hover); }
+
+    .ni-num {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent);
+      opacity: 0.35;
+      flex-shrink: 0;
+      line-height: 1.2;
+      min-width: 18px;
+    }
+
+    .ni-txt { font-size: 12px; color: var(--text); line-height: 1.5; font-weight: 400; }
+    .ni-src { font-size: 10px; color: var(--accent); margin-top: 3px; font-weight: 600; }
+
+    /* ── Ticker ── */
+    .portal-ticker {
+      background: var(--ticker);
+      border-top: 1px solid var(--border);
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow: hidden;
+      transition: background var(--transition);
+    }
+
+    .tk-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--badge-bg);
+      padding: 4px 10px;
+      border-radius: 6px;
+      flex-shrink: 0;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tk-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--green-400);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .tk-scroll {
+      flex: 1;
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+    }
+
+    .tk-track {
+      display: flex;
+      gap: 40px;
+      animation: scroll 30s linear infinite;
+      white-space: nowrap;
+    }
+
+    .tk-item {
+      font-size: 12px;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .tk-item span { color: var(--text); font-weight: 600; }
+
+    /* ── Footer ── */
+    .portal-footer {
+      background: var(--green-900);
+      color: rgba(255, 255, 255, 0.75);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 11px;
+    }
+
+    .portal.dark .portal-footer {
+      background: #061220;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-logo {
+      width: 28px;
+      height: 28px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 10px;
+      color: #fff;
+    }
+
+    .footer-brand strong {
+      color: #fff;
+      font-size: 12px;
+      display: block;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+
+    .footer-links a:hover { color: var(--green-400); }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Stagger app cards */
+    .app-card:nth-child(1) { animation-delay: 0.02s; }
+    .app-card:nth-child(2) { animation-delay: 0.04s; }
+    .app-card:nth-child(3) { animation-delay: 0.06s; }
+    .app-card:nth-child(4) { animation-delay: 0.08s; }
+    .app-card:nth-child(5) { animation-delay: 0.10s; }
+    .app-card:nth-child(6) { animation-delay: 0.12s; }
+    .app-card:nth-child(7) { animation-delay: 0.14s; }
+    .app-card:nth-child(8) { animation-delay: 0.16s; }
+    .app-card:nth-child(9) { animation-delay: 0.18s; }
+    .app-card:nth-child(10) { animation-delay: 0.20s; }
+    .app-card:nth-child(11) { animation-delay: 0.22s; }
+    .app-card:nth-child(12) { animation-delay: 0.24s; }
+    .app-card:nth-child(13) { animation-delay: 0.26s; }
+    .app-card:nth-child(14) { animation-delay: 0.28s; }
+    .app-card:nth-child(15) { animation-delay: 0.30s; }
+    .app-card:nth-child(16) { animation-delay: 0.32s; }
+    .app-card:nth-child(17) { animation-delay: 0.34s; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1100px) {
+      .portal-body { grid-template-columns: 1fr; }
+      .sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .sidebar .side-card:last-child { grid-column: 1 / -1; }
+      .hdr-nav { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .portal-header { padding: 0 16px; height: 56px; }
+      .logo-sub { display: none; }
+      .srch { width: 140px; }
+      .ctrl-btn span { display: none; }
+      .welcome-strip { padding: 16px 16px 0; }
+      .portal-body { padding: 16px; gap: 16px; }
+      .hero-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+      }
+      .hero-main { grid-row: auto; min-height: 200px; }
+      .hero-sm1, .hero-sm2 { min-height: 130px; }
+      .apps-grid { grid-template-columns: repeat(2, 1fr); }
+      .sidebar { grid-template-columns: 1fr; }
+      .stat-pills { width: 100%; }
+      .stat-pill { flex: 1; min-width: 120px; }
+      .footer-links { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .srch { display: none; }
+      .apps-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="portal light" id="portal">
+
+  <!-- Header -->
+  <header class="portal-header">
+    <div class="logo-block">
+      <div class="logo-icon">EC</div>
+      <div>
+        <div class="logo-text">ECEWS PORTAL</div>
+        <div class="logo-sub">Improving Education and Health in Nigeria</div>
+      </div>
+    </div>
+
+    <nav class="hdr-nav" aria-label="Main navigation">
+      <button class="nav-btn active" data-filter="all">Home</button>
+      <button class="nav-btn" data-filter="work">Work</button>
+      <button class="nav-btn" data-filter="finance">Finance</button>
+      <button class="nav-btn" data-filter="health">Health</button>
+      <button class="nav-btn" data-filter="reports">Reports</button>
+    </nav>
+
+    <div class="hdr-right">
+      <div class="srch">
+        <i class="ti ti-search srch-ic" aria-hidden="true"></i>
+        <input type="text" id="searchInput" placeholder="Search apps..." aria-label="Search applications" />
+      </div>
+      <div class="ctrl-group">
+        <button class="ctrl-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle light/dark mode">
+          <i class="ti ti-sun" id="themeIc" aria-hidden="true"></i>
+          <span id="themeTxt">Dark</span>
+        </button>
+        <button class="ctrl-btn" id="layoutBtn" onclick="toggleLayout()" aria-label="Toggle card/compact layout">
+          <i class="ti ti-layout-grid" id="layoutIc" aria-hidden="true"></i>
+          <span id="layoutTxt">Compact</span>
+        </button>
+      </div>
+      <button class="so-btn">Sign Out</button>
+    </div>
+  </header>
+
+  <!-- Welcome -->
+  <section class="welcome-strip">
+    <div class="welcome-inner">
+      <div class="welcome-text">
+        <h1 id="greeting">Good afternoon</h1>
+        <p>Welcome back to the ECEWS staff portal · <span id="todayDate"></span></p>
+      </div>
+      <div class="stat-pills">
+        <div class="stat-pill">
+          <div class="stat-pill-ic"><i class="ti ti-apps"></i></div>
+          <div>
+            <div class="stat-pill-val">17</div>
+            <div class="stat-pill-lbl">Applications</div>
+          </div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-pill-ic"><i class="ti ti-circle-check"></i></div>
+          <div>
+            <div class="stat-pill-val">Live</div>
+            <div class="stat-pill-lbl">All Systems</div>
+          </div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-pill-ic"><i class="ti ti-clock"></i></div>
+          <div>
+            <div class="stat-pill-val">17</div>
+            <div class="stat-pill-lbl">Pending Approvals</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main body -->
+  <div class="portal-body">
+
+    <main class="main-col">
+
+      <!-- Hero -->
+      <div class="hero-grid">
+        <article class="hero-card hero-main">
+          <div class="hero-bg">
+            <div class="hero-pattern"></div>
+            <span class="hero-emoji" aria-hidden="true">🏥</span>
+          </div>
+          <div class="hero-badge">Featured</div>
+          <div class="hero-overlay">
+            <div class="hero-src">ECEWS Health Update · Today</div>
+            <div class="hero-ttl">ACE 5 DHIS2 records 98% facility data completeness across 3 states in Q1 2026</div>
+          </div>
+        </article>
+        <article class="hero-card hero-sm1">
+          <div class="hero-bg">
+            <div class="hero-pattern"></div>
+            <span class="hero-emoji" aria-hidden="true">💊</span>
+          </div>
+          <div class="hero-overlay">
+            <div class="hero-src">GF Programme · 2h ago</div>
+            <div class="hero-ttl">TPT coverage reaches milestone in HIV care retention programme</div>
+          </div>
+        </article>
+        <article class="hero-card hero-sm2">
+          <div class="hero-bg">
+            <div class="hero-pattern"></div>
+            <span class="hero-emoji" aria-hidden="true">📊</span>
+          </div>
+          <div class="hero-overlay">
+            <div class="hero-src">Data & Analytics · 4h ago</div>
+            <div class="hero-ttl">VANTAGE AIM250 launches enhanced VL suppression tracking</div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Apps -->
+      <section>
+        <div class="sec-label">
+          All Applications
+          <span class="apps-count" id="appsCount">17 apps</span>
+        </div>
+        <div class="apps-grid" id="appsGrid">
+
+          <div class="app-card" data-cat="work" data-name="official website">
+            <div class="app-icon aig"><i class="ti ti-world"></i></div>
+            <div><div class="app-name">Official Website</div><div class="app-tag">Public portal</div></div>
+          </div>
+          <div class="app-card" data-cat="work" data-name="timesheet">
+            <div class="app-icon aib"><i class="ti ti-clock"></i></div>
+            <div><div class="app-name">Timesheet</div><div class="app-tag">HR · Attendance</div></div>
+          </div>
+          <div class="app-card" data-cat="work" data-name="ecews travels">
+            <div class="app-icon ait"><i class="ti ti-plane"></i></div>
+            <div><div class="app-name">Travels</div><div class="app-tag">Logistics</div></div>
+          </div>
+          <div class="app-card" data-cat="work" data-name="careers">
+            <div class="app-icon aip"><i class="ti ti-users"></i></div>
+            <div><div class="app-name">Careers</div><div class="app-tag">Recruitment</div></div>
+          </div>
+          <div class="app-card" data-cat="work" data-name="easy profiler">
+            <div class="app-icon aia"><i class="ti ti-user-check"></i></div>
+            <div><div class="app-name">Easy Profiler</div><div class="app-tag">Staff profiles</div></div>
+          </div>
+          <div class="app-card" data-cat="work" data-name="knowledge mgmt">
+            <div class="app-icon aig"><i class="ti ti-bulb"></i></div>
+            <div><div class="app-name">Knowledge Mgmt</div><div class="app-tag">Learning portal</div></div>
+          </div>
+          <div class="app-card" data-cat="health" data-name="adl">
+            <div class="app-icon aic"><i class="ti ti-heart"></i></div>
+            <div><div class="app-name">ADL</div><div class="app-tag">Health platform</div></div>
+          </div>
+          <div class="app-card" data-cat="work" data-name="ecews intranet">
+            <div class="app-icon aib"><i class="ti ti-brand-windows"></i></div>
+            <div><div class="app-name">ECEWS Intranet</div><div class="app-tag">SharePoint</div></div>
+          </div>
+          <div class="app-card" data-cat="finance" data-name="sage 300 finance">
+            <div class="app-icon aia"><i class="ti ti-report-money"></i></div>
+            <div><div class="app-name">SAGE 300 Finance</div><div class="app-tag">Accounting</div></div>
+          </div>
+          <div class="app-card" data-cat="finance" data-name="sage 300 people">
+            <div class="app-icon aig"><i class="ti ti-briefcase"></i></div>
+            <div><div class="app-name">Sage 300 People</div><div class="app-tag">HR system</div></div>
+          </div>
+          <div class="app-card" data-cat="health reports" data-name="ecews gf dhis2">
+            <div class="app-icon ait"><i class="ti ti-database"></i></div>
+            <div><div class="app-name">ECEWS GF DHIS2</div><div class="app-tag">Data system</div></div>
+          </div>
+          <div class="app-card" data-cat="health reports" data-name="ace 5 dhis2">
+            <div class="app-icon aip"><i class="ti ti-activity"></i></div>
+            <div><div class="app-name">ACE 5 DHIS2</div><div class="app-tag">HMIS</div></div>
+          </div>
+          <div class="app-card" data-cat="reports" data-name="gf epcon ai">
+            <div class="app-icon aik"><i class="ti ti-cpu"></i></div>
+            <div><div class="app-name">GF EPCON AI</div><div class="app-tag">AI analytics</div></div>
+          </div>
+          <div class="app-card" data-cat="reports" data-name="vantage aim250">
+            <div class="app-icon air"><i class="ti ti-chart-dots"></i></div>
+            <div><div class="app-name">VANTAGE AIM250</div><div class="app-tag">Dashboards</div></div>
+          </div>
+          <div class="app-card" data-cat="health reports" data-name="speed dhis">
+            <div class="app-icon aib"><i class="ti ti-speakerphone"></i></div>
+            <div><div class="app-name">SPEED DHIS</div><div class="app-tag">Health data</div></div>
+          </div>
+          <div class="app-card" data-cat="work" data-name="my office tools">
+            <div class="app-icon aia"><i class="ti ti-apps"></i></div>
+            <div><div class="app-name">My Office Tools</div><div class="app-tag">Microsoft 365</div></div>
+          </div>
+          <div class="app-card" data-cat="work" data-name="bip.it">
+            <div class="app-icon aib"><i class="ti ti-device-desktop"></i></div>
+            <div><div class="app-name">BIP.IT</div><div class="app-tag">IT platform</div></div>
+          </div>
+
+          <div class="no-results" id="noResults">
+            <i class="ti ti-search-off"></i>
+            No applications match your search
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+      <div class="side-card">
+        <div class="s-hdr">
+          <span class="s-ttl"><i class="ti ti-cloud" style="margin-right:5px"></i>Weather · Lagos</span>
+          <a class="s-more" href="#">Full forecast ›</a>
+        </div>
+        <div class="wx-body">
+          <div class="wx-top">
+            <div>
+              <div class="wx-tmp">30°C</div>
+              <div class="wx-loc">Lagos, Nigeria</div>
+              <div class="wx-dsc">Partly cloudy · Humidity 78%</div>
+            </div>
+            <div class="wx-ic" aria-hidden="true">⛅</div>
+          </div>
+          <div class="wx-fc">
+            <div class="fc"><div class="fc-d">Mon</div><div class="fc-i">⛅</div><div class="fc-h">32°</div><div class="fc-l">24°</div></div>
+            <div class="fc"><div class="fc-d">Tue</div><div class="fc-i">🌧</div><div class="fc-h">29°</div><div class="fc-l">23°</div></div>
+            <div class="fc"><div class="fc-d">Wed</div><div class="fc-i">🌦</div><div class="fc-h">31°</div><div class="fc-l">24°</div></div>
+            <div class="fc"><div class="fc-d">Thu</div><div class="fc-i">☀️</div><div class="fc-h">33°</div><div class="fc-l">25°</div></div>
+            <div class="fc"><div class="fc-d">Fri</div><div class="fc-i">⛅</div><div class="fc-h">31°</div><div class="fc-l">24°</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <div class="s-hdr">
+          <span class="s-ttl"><i class="ti ti-link" style="margin-right:5px"></i>Quick Access</span>
+        </div>
+        <div class="ql-list">
+          <a class="ql" href="https://ecews.sharepoint.com" target="_blank" rel="noopener">
+            <div class="ql-ic aib"><i class="ti ti-brand-windows"></i></div>
+            <div><div class="ql-nm">SharePoint Intranet</div><div class="ql-ds">ECEWS internal portal</div></div>
+            <i class="ti ti-external-link ql-ext"></i>
+          </a>
+          <a class="ql" href="https://ecews.sharepoint.com/sites/kms" target="_blank" rel="noopener">
+            <div class="ql-ic aig"><i class="ti ti-books"></i></div>
+            <div><div class="ql-nm">Knowledge Mgmt System</div><div class="ql-ds">KMS · SharePoint site</div></div>
+            <i class="ti ti-external-link ql-ext"></i>
+          </a>
+          <a class="ql" href="https://bip.it/helpdesk" target="_blank" rel="noopener">
+            <div class="ql-ic aia"><i class="ti ti-headset"></i></div>
+            <div><div class="ql-nm">IT Help Desk</div><div class="ql-ds">BIP.IT support portal</div></div>
+            <i class="ti ti-external-link ql-ext"></i>
+          </a>
+          <a class="ql" href="https://ecews.sharepoint.com/sites/itsupport" target="_blank" rel="noopener">
+            <div class="ql-ic air"><i class="ti ti-tool"></i></div>
+            <div><div class="ql-nm">IT Support Tickets</div><div class="ql-ds">Log & track requests</div></div>
+            <i class="ti ti-external-link ql-ext"></i>
+          </a>
+          <div class="ql">
+            <div class="ql-ic ait"><i class="ti ti-clock"></i></div>
+            <div><div class="ql-nm">Submit Timesheet</div><div class="ql-ds">Due: end of month</div></div>
+            <i class="ti ti-chevron-right ql-ext"></i>
+          </div>
+          <div class="ql">
+            <div class="ql-ic aip"><i class="ti ti-plane-departure"></i></div>
+            <div><div class="ql-nm">Request Travel</div><div class="ql-ds">Travels portal</div></div>
+            <i class="ti ti-chevron-right ql-ext"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <div class="s-hdr">
+          <span class="s-ttl"><i class="ti ti-news" style="margin-right:5px"></i>Top Updates</span>
+          <a class="s-more" href="#">See all ›</a>
+        </div>
+        <div class="news-list">
+          <article class="ni">
+            <div class="ni-num">1</div>
+            <div>
+              <div class="ni-txt">New GF grant cycle reporting deadline set for all implementing partners</div>
+              <div class="ni-src">ECEWS Finance · 1h ago</div>
+            </div>
+          </article>
+          <article class="ni">
+            <div class="ni-num">2</div>
+            <div>
+              <div class="ni-txt">DHIS2 data quality training scheduled for June 15</div>
+              <div class="ni-src">IT Dept · 3h ago</div>
+            </div>
+          </article>
+          <article class="ni">
+            <div class="ni-num">3</div>
+            <div>
+              <div class="ni-txt">BIP.IT helpdesk hours extended for remote staff onboarding</div>
+              <div class="ni-src">BIP.IT · 5h ago</div>
+            </div>
+          </article>
+          <article class="ni">
+            <div class="ni-num">4</div>
+            <div>
+              <div class="ni-txt">Sage 300 People updated with new Q2 payroll features</div>
+              <div class="ni-src">HR Systems · Yesterday</div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- Live ticker -->
+  <div class="portal-ticker">
+    <span class="tk-lbl"><span class="tk-dot"></span> Live</span>
+    <div class="tk-scroll">
+      <div class="tk-track">
+        <span class="tk-item">All services operational</span>
+        <span class="tk-item"><span>GF EPCON AI</span> processing Q1 datasets</span>
+        <span class="tk-item">Next maintenance: Sunday 02:00–04:00 WAT</span>
+        <span class="tk-item"><span>17 pending timesheet approvals</span></span>
+        <span class="tk-item">All services operational</span>
+        <span class="tk-item"><span>GF EPCON AI</span> processing Q1 datasets</span>
+        <span class="tk-item">Next maintenance: Sunday 02:00–04:00 WAT</span>
+        <span class="tk-item"><span>17 pending timesheet approvals</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="portal-footer">
+    <div class="footer-brand">
+      <div class="footer-logo">EC</div>
+      <div>
+        <strong>Education as a Vaccine (ECEWS)</strong>
+        © 2026 · All rights reserved
+      </div>
+    </div>
+    <nav class="footer-links" aria-label="Footer links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">IT Support</a>
+      <a href="#">Staff Handbook</a>
+      <a href="#">Contact HR</a>
+    </nav>
+  </footer>
+
+</div>
+
+<script>
+  var isDark = false;
+  var isCard = true;
+  var activeFilter = 'all';
+
+  /* Restore preferences */
+  (function initPrefs() {
+    var savedTheme = localStorage.getItem('ecews-theme');
+    var savedLayout = localStorage.getItem('ecews-layout');
+    if (savedTheme === 'dark') { isDark = true; applyTheme(); }
+    if (savedLayout === 'compact') { isCard = false; applyLayout(); }
+  })();
+
+  function applyTheme() {
+    var portal = document.getElementById('portal');
+    portal.classList.toggle('dark', isDark);
+    portal.classList.toggle('light', !isDark);
+    document.getElementById('themeIc').className = isDark ? 'ti ti-moon' : 'ti ti-sun';
+    document.getElementById('themeTxt').textContent = isDark ? 'Light' : 'Dark';
+    document.getElementById('themeBtn').classList.toggle('active-mode', !isDark);
+  }
+
+  function toggleTheme() {
+    isDark = !isDark;
+    applyTheme();
+    localStorage.setItem('ecews-theme', isDark ? 'dark' : 'light');
+  }
+
+  function applyLayout() {
+    document.getElementById('appsGrid').classList.toggle('compact', !isCard);
+    document.getElementById('layoutIc').className = isCard ? 'ti ti-layout-grid' : 'ti ti-layout-list';
+    document.getElementById('layoutTxt').textContent = isCard ? 'Compact' : 'Card';
+    document.getElementById('layoutBtn').classList.toggle('active-mode', !isCard);
+  }
+
+  function toggleLayout() {
+    isCard = !isCard;
+    applyLayout();
+    localStorage.setItem('ecews-layout', isCard ? 'card' : 'compact');
+  }
+
+  /* Greeting & date */
+  (function setGreeting() {
+    var h = new Date().getHours();
+    var greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+    document.getElementById('greeting').textContent = greet;
+    document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-NG', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+  })();
+
+  /* Nav filter */
+  document.querySelectorAll('.nav-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.nav-btn').forEach(function(x) { x.classList.remove('active'); });
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      filterApps(document.getElementById('searchInput').value);
+    });
+  });
+
+  /* Search & filter */
+  function filterApps(query) {
+    query = (query || '').toLowerCase().trim();
+    var cards = document.querySelectorAll('.app-card:not(.no-results)');
+    var visible = 0;
+
+    cards.forEach(function(card) {
+      var name = card.dataset.name || '';
+      var cats = (card.dataset.cat || '').split(' ');
+      var matchSearch = !query || name.indexOf(query) !== -1 ||
+        card.querySelector('.app-name').textContent.toLowerCase().indexOf(query) !== -1;
+      var matchFilter = activeFilter === 'all' || cats.indexOf(activeFilter) !== -1;
+      var show = matchSearch && matchFilter;
+      card.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+
+    document.getElementById('noResults').classList.toggle('show', visible === 0);
+    document.getElementById('appsCount').textContent = visible + ' app' + (visible !== 1 ? 's' : '');
+  }
+
+  document.getElementById('searchInput').addEventListener('input', function(e) {
+    filterApps(e.target.value);
+  });
+
+  /* App card click ripple */
+  document.querySelectorAll('.app-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.style.transform = 'scale(0.97)';
+      setTimeout(function() { card.style.transform = ''; }, 150);
+    });
+  });
+</script>
+
+</body>
+</html>

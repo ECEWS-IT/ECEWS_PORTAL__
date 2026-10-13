@@ -1,0 +1,102 @@
+@model NewsletterArticleViewModel
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = Model.Article.Title;
+    var a = Model.Article;
+}
+
+<div class="portal portal-pro article-page" id="portal">
+    <header class="pro-header">
+        <div class="pro-header-left">
+            <a href="/" class="logo-block" aria-label="ECEWS Portal home">
+                <img src="~/images/ecews-logo-transparent.png"
+                     asp-append-version="true"
+                     alt="ECEWS"
+                     class="logo-img"
+                     width="200"
+                     height="44" />
+            </a>
+        </div>
+        <div class="pro-header-center">
+            <h1 class="admin-header-title">Newsletter</h1>
+        </div>
+        <div class="pro-header-right">
+            <button class="pro-icon-btn" id="themeBtn" aria-label="Toggle light/dark theme" title="Theme">
+                <i class="ti ti-moon" id="themeIc"></i>
+            </button>
+            <a href="/" class="admin-back-btn">
+                <i class="ti ti-arrow-left"></i>
+                Portal
+            </a>
+        </div>
+    </header>
+
+    <main class="article-main">
+        <article class="article-shell">
+            <div class="article-crumb">ECEWS Rising · May–June 2026 · Section</div>
+            <h1 class="article-title">@a.Title</h1>
+            <div class="article-meta">
+                <span>@a.Source</span>
+                @if (a.PdfPage > 0)
+                {
+                    <span>PDF p.@a.PdfPage</span>
+                }
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(a.ImageUrl))
+            {
+                <figure class="article-hero-fig">
+                    <img src="@a.ImageUrl" asp-append-version="true" alt="" />
+                </figure>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(a.Summary))
+            {
+                <p class="article-summary">@a.Summary</p>
+            }
+
+            <div class="article-body">
+                @foreach (var p in a.Paragraphs)
+                {
+                    <p>@p</p>
+                }
+            </div>
+
+            <div class="article-actions">
+                <a class="admin-primary-btn" href="/" style="text-decoration:none;">
+                    <i class="ti ti-home"></i>
+                    Back to portal
+                </a>
+                @if (!string.IsNullOrWhiteSpace(a.PdfUrl))
+                {
+                    <a class="admin-ghost-btn" href="@a.PdfUrl" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+                        <i class="ti ti-file-type-pdf"></i>
+                        Open this section in PDF
+                    </a>
+                }
+            </div>
+        </article>
+
+        @if (Model.Related.Count > 0)
+        {
+            <aside class="article-related">
+                <h2>More from this edition</h2>
+                <div class="article-related-grid">
+                    @foreach (var r in Model.Related)
+                    {
+                        <a class="article-related-card" href="/Home/Article/@r.Slug">
+                            @if (!string.IsNullOrWhiteSpace(r.ImageUrl))
+                            {
+                                <img src="@r.ImageUrl" asp-append-version="true" alt="" />
+                            }
+                            <div>
+                                <div class="article-related-src">@r.Source</div>
+                                <div class="article-related-ttl">@r.Title</div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </aside>
+        }
+    </main>
+</div>
